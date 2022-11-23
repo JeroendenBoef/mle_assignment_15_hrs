@@ -5,7 +5,7 @@ from typing import List
 import pandas as pd
 
 from models.utils import clean_df, convert_to_unix_timedelta
-from models.constants import RELEVANT_COLUMNS
+from models.constants import RELEVANT_COLUMNS, ALL_COLS
 
 
 class GBDTModelABC(ABC):
@@ -25,7 +25,7 @@ class GBDTModel(GBDTModelABC):
     def __init__(
         self,
         batch_size: int = 512,
-        model_path: str = "./models/model_checkpoints/lgb_gbdt_model.pkl",
+        model_path: str = "../model_checkpoints/lgb_gbdt_model.pkl",
     ):
         self.batch_size = batch_size
         self.model_path = model_path
@@ -37,15 +37,16 @@ class GBDTModel(GBDTModelABC):
             self._model = lgb.Booster(model_file=self.model_path)
         return self._model
 
-    def preprocess(self, df: pd.DataFrame):
+    def preprocess(self, features: list):
+        df = pd.DataFrame(np.array(features), columns=ALL_COLS)
         df = clean_df(df[RELEVANT_COLUMNS].copy())
         df["date_recorded"] = convert_to_unix_timedelta(df)
         df.drop(df.columns[len(df.columns) - 1], axis=1, inplace=True)
         return df.values
 
-    def infer(self, input: pd.DataFrame, preprocess=False) -> List[int]:
+    def infer(self, features: list, preprocess=False) -> List[int]:
         output = []
-        for batch in GBDTModel.chunk_batch(input, self.batch_size):
+        for batch in GBDTModel.chunk_batch(features, self.batch_size):
             if preprocess:
                 batch = self.preprocess(batch)
             logits = self.model.predict(batch)
