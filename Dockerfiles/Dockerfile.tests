@@ -1,0 +1,10 @@
+FROM python:3.10.7-slim
+
+WORKDIR /opt/app
+
+COPY ./requirements_tests.txt requirements_tests.txt
+RUN pip install --no-cache-dir -r requirements_tests.txt
+
+COPY tests tests
+
+CMD ["python", "-m", "unittest", "discover", "-t", "."]
