@@ -1,3 +1,4 @@
+from tokenize import Single
 import numpy as np
 from typing import List
 from pydantic import BaseModel
@@ -10,9 +11,12 @@ class PreprocessResponse(BaseModel):
         schema_extra = {"example": {"features": ""}}
 
 
+class SingleInferResponse(BaseModel):
+    prediction: int
+
+
 class InferResponse(BaseModel):
-    features: list
-    preprocess: bool = False
+    predictions: List[int]
 
     class Config:
         schema_extra = {"example": {"features": ""}}
