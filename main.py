@@ -1,7 +1,6 @@
-import argparse
-from typing import List
-import pandas as pd
 import uvicorn
+import argparse
+import numpy as np
 from fastapi import FastAPI, Body
 from timing_asgi import TimingClient, TimingMiddleware
 from timing_asgi.integrations import StarletteScopeToName
@@ -29,7 +28,7 @@ parser.add_argument(
     default=True,
 )
 
-args = parser.parse_known_args()
+args, unknown_args = parser.parse_known_args()
 
 kwargs = {
     "host": args.host,
@@ -72,8 +71,8 @@ if args.debug:
 
 if args.data_validation:
     # add response models for data validation and that it shows the response model in Swagger UI
-    endpoint_kwargs["/preprocess"]["response_model"] = schemas.PreProcess
-    endpoint_kwargs["/infer"]["response_model"] = schemas.Infer
+    endpoint_kwargs["/preprocess"]["response_model"] = schemas.PreprocessResponse
+    endpoint_kwargs["/infer"]["response_model"] = schemas.InferResponse
 
 
 @app.get(**endpoint_kwargs["/"])
@@ -84,14 +83,14 @@ async def health_check():
 
 
 @app.post(**endpoint_kwargs["/preprocess"])
-async def preprocess(df: pd.DataFrame = Body(None)):
-    preprocessed_features = model.preprocess(df)
+async def preprocess(features: list = Body(None)):
+    preprocessed_features = model.preprocess(features)
     return schemas.PreprocessResponse(preprocessed_features=preprocessed_features)
 
 
 @app.post(**endpoint_kwargs["/infer"])
-async def search_bio_with_sample(df: pd.DataFrame = Body(None), preprocess: bool = Body(None)):
-    predictions = model.infer(df, preprocess=preprocess)
+async def search_bio_with_sample(features: list = Body(None), preprocess: bool = Body(None)):
+    predictions = model.infer(features, preprocess=preprocess)
     return schemas.InferResponse(
         predictions=predictions,
     )
