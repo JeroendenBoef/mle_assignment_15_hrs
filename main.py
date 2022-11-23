@@ -50,6 +50,9 @@ endpoint_kwargs = {
     "/infer": {
         "summary": "Infer water pump status based on provided features, set preprocess=True to preprocess provided features",
     },
+    "/batch_infer": {
+        "summary": "Infer water pump status based on provided features in batches, set preprocess=True to preprocess provided features",
+    },
 }
 for endpoint in endpoint_kwargs.keys():
     assert endpoint.startswith("/")
@@ -72,7 +75,8 @@ if args.debug:
 if args.data_validation:
     # add response models for data validation and that it shows the response model in Swagger UI
     endpoint_kwargs["/preprocess"]["response_model"] = schemas.PreprocessResponse
-    endpoint_kwargs["/infer"]["response_model"] = schemas.InferResponse
+    endpoint_kwargs["/infer"]["response_model"] = schemas.SingleInferResponse
+    endpoint_kwargs["/batch_infer"]["response_model"] = schemas.InferResponse
 
 
 @app.get(**endpoint_kwargs["/"])
@@ -90,7 +94,15 @@ async def preprocess(features: list = Body(None)):
 
 @app.post(**endpoint_kwargs["/infer"])
 async def search_bio_with_sample(features: list = Body(None), preprocess: bool = Body(None)):
-    predictions = model.infer(features, preprocess=preprocess)
+    prediction = model.infer(features, preprocess=preprocess, batching=False)
+    return schemas.SingleInferResponse(
+        prediction=prediction,
+    )
+
+
+@app.post(**endpoint_kwargs["/batch_infer"])
+async def search_bio_with_sample(features: list = Body(None), preprocess: bool = Body(None)):
+    predictions = model.infer(features, preprocess=preprocess, batching=True)
     return schemas.InferResponse(
         predictions=predictions,
     )
