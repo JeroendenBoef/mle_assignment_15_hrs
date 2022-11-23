@@ -53,7 +53,7 @@ CATEGORICAL_COLLUMNS = [
     "waterpoint_type",
 ]
 
-ALL_COLS = [
+ALL_FEATURE_COLS = [
     "id",
     "amount_tsh",
     "date_recorded",
@@ -94,7 +94,6 @@ ALL_COLS = [
     "source_class",
     "waterpoint_type",
     "waterpoint_type_group",
-    "status_group",
 ]
 
 LIGHTGBM_TRAINING_PARAMS = {
