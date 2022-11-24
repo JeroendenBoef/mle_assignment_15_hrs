@@ -35,5 +35,5 @@ test_report = evaluate(model, X_test, y_test)
 
 print(f"Test partition metrics report: \n {test_report}")
 
-model.save_model("models/model_checkpoints/lgb_gbdt_model_latest.pkl")
+model.save_model("models/model_checkpoints/lgb_gbdt_model.pkl")
 print("Model saved")
