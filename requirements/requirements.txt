@@ -1,0 +1,11 @@
+# API-related packages
+fastapi
+pydantic
+uvicorn[standard]
+timing_asgi #maybe not needed
+
+# Model
+lightgbm
+numpy
+pandas
+sklearn
