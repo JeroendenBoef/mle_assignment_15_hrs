@@ -6,7 +6,7 @@ from timing_asgi import TimingClient, TimingMiddleware
 from timing_asgi.integrations import StarletteScopeToName
 
 from models import schemas
-from models.models import GBDTModel
+from models.model_wrappers import GBDTModel
 
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument(
