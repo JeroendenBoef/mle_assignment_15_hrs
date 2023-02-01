@@ -1,5 +1,5 @@
 ### MLE showcase
-This repo is the resulting product of 15 - 20 hrs of work devided over a 6 day timespan. The dataset consists of textual, categorical and numerical data regarding water pipeline service status and influencing factors. The resulting repository contains dockerized training scripts to generate a LightGBM model, a dockerized API written in FastAPI with model wrappers for flexibility and dockerized unittest which can be launched together with the API using docker-compose.
+This repo is the resulting product of 15 - 20 hrs of work devided over a 6 day timespan. The dataset consists of textual, categorical and numerical data regarding water pipeline service status and influencing factors. The resulting repository contains dockerized training scripts to generate a LightGBM model, a dockerized API written in FastAPI with model wrappers for flexibility and dockerized unittest which can be launched together with the API using docker-compose. Finally, the repo performs automated flake8 and black styling reformatting using pre-commit hooks.
 
 ### Design choices
 LightGBM was used as classifier over other Gradient Boosting frameworks due to it's leaf-wise growth, resulting in better performance for the high amount of categorical features in this dataset. 
